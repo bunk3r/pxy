@@ -180,11 +180,11 @@ do
             ;;
         c)	TYPE="${OPTARG//[^0-9]/}";
             if [ "$TYPE" -eq 1 ]; then
-                CQUERY="select IP,port from proxy where active='n'";
+                CQUERY="select IP,port from proxy where active='n' order by date ASC";
             elif [ "$TYPE" -eq 2 ]; then
                 CQUERY="select IP,port from proxy";
             elif [ "$TYPE" -eq 3 ]; then
-                CQUERY="select IP,port from proxy where active='y'";
+                CQUERY="select IP,port from proxy where active='y' order by date ASC";
             else
                 echo " -> Please only \"1-3\"! Ignoring it..."
             fi
@@ -219,7 +219,7 @@ if [ -f "$PDBFILE" ]; then
     echo "File \"$PDBFILE\" found! Using it...";
 else
     echo " -> Creating new DB..."
-    sqlite3 "$PDBFILE" 'CREATE TABLE proxy (id INTEGER PRIMARY KEY, IP TEXT, port NUMERIC, type TEXT, level TEXT, checked TEXT, date NUMERIC, active NUMERIC, org TEXT, country_name TEXT, country_code TEXT, UNIQUE(IP, port));';
+    sqlite3 "$PDBFILE" 'CREATE TABLE proxy (id INTEGER PRIMARY KEY, IP TEXT, port NUMERIC, type TEXT, level TEXT, checked TEXT, date NUMERIC, active TEXT, org TEXT, country_name TEXT, country_code TEXT, UNIQUE(IP, port));';
 fi
 
 if [[ -n "$SHODAN" ]]; then

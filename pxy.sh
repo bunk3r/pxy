@@ -81,7 +81,7 @@ banner() {
 
 # USAGE
 usage(){
-    printf "Usage: %s: [-d] [-i] [-l] [-f <file>] [-t <number>] [-b <dbfile>] [-c 1-3] [-s geo|active] [-r]\n\n" $0;
+    printf "Usage: %s: [-d] [-i] [-l] [-f <file>] [-t <number>] [-b <dbfile>] [-c 1-3] [-s geo|active|elite] [-r]\n\n" $0;
     echo -e "\t[-d]: download new data from shodan";
     echo -e "\t[-i]: interactive session";
     echo -e "\t[-l]: load pxies from local shodan JSON files";

@@ -8,10 +8,7 @@
 # REMEMBER: shodan init 'APIKEY' first time
 #
 # CONFIG
-TIMEOUT=5;
-PDBFILE='pxies.db';
-CQUERY='select IP,port from proxy where checked is null';
-CHECKURL='http://<YOUR_IP:PORT>/proxycheck.php';
+. pxyconfig
 
 banner() {
     b=$((( RANDOM % 5)+1))

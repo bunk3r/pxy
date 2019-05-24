@@ -204,7 +204,7 @@ do
             ;;
         s)	SHOW="${OPTARG//[^a-zA-Z]/}"
             if [[ "$SHOW" == "geo" ]]; then
-                sqlite3 $PDBFILE "select type,IP,port,level,quote(country_name),quote(country_code) from proxy where active='y'";
+                sqlite3 $PDBFILE "select type,IP,port,level,ssl,quote(country_name),quote(country_code) from proxy where active='y'";
                 exit;
             elif [[ "$SHOW" == "active" ]]; then
                 sqlite3 $PDBFILE --separator ' ' "select type,IP,port,level,ssl from proxy where active='y'";
@@ -213,7 +213,7 @@ do
                 sqlite3 $PDBFILE --separator ' ' "select type,IP,port,ssl from proxy where active='y' and level like 'ELITE%'";
                 exit;
             elif [[ "$SHOW" == "litssl" ]]; then
-                sqlite3 $PDBFILE --separator ' ' "select type,IP,port from proxy where active='y' and ssl='y' or type like 'sock%' and level like 'ELITE%'";
+                sqlite3 $PDBFILE --separator ' ' "select type,IP,port from proxy where active='y' and ssl not null or type like 'sock%' and level like 'ELITE%'";
                 exit;
             elif [[ "$SHOW" == "litsocks" ]]; then
                 sqlite3 $PDBFILE --separator ' ' "select type,IP,port from proxy where active='y' and type like 'sock%' and level like 'ELITE%'";

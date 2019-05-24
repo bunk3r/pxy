@@ -89,7 +89,7 @@ usage(){
     echo -e "\t[-t <number>]: curl timeout (default to \"5\" seconds)";
     echo -e "\t[-b <dbfile>]: sqlite3 file (default to \"pxies.db\")";
     echo -e "\t[-c <number>]:\n\t   1: recheck non active pxies\n\t   2: all\n\t   3: active";
-    echo -e "\t[-s geo|active|elite]\n\t   geo: show geographical data\n\t   active: show active pxies\n\t\
+    echo -e "\t[-s geo|active|elite|elitessl]\n\t   geo: show geographical data\n\t   active: show active pxies\n\t\
    elite: show active elite pxies\n\t   elitessl: show active elite ssl pxies";
     echo -e "\t[-r]: reset DB (delete file)";
     exit 2;

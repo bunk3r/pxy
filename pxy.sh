@@ -81,7 +81,7 @@ banner() {
 
 # USAGE
 usage(){
-    printf "Usage: %s: [-d] [-i] [-l] [-f <file>] [-t <number>] [-b <dbfile>] [-c 1-3] [-s geo|active|elite] [-r]\n\n" $0;
+    printf "Usage: %s: [-d] [-i] [-l] [-f <file>] [-t <number>] [-b <dbfile>] [-c 1-3] [-s geo|active|elite|elitessl] [-r]\n\n" $0;
     echo -e "\t[-d]: download new data from shodan";
     echo -e "\t[-i]: interactive session";
     echo -e "\t[-l]: load pxies from local shodan JSON files";
@@ -89,7 +89,8 @@ usage(){
     echo -e "\t[-t <number>]: curl timeout (default to \"5\" seconds)";
     echo -e "\t[-b <dbfile>]: sqlite3 file (default to \"pxies.db\")";
     echo -e "\t[-c <number>]:\n\t   1: recheck non active pxies\n\t   2: all\n\t   3: active";
-    echo -e "\t[-s geo|active|elite]\n\t   geo: show geographical data\n\t   active: show active pxies\n\t   elite: show active elite pxies";
+    echo -e "\t[-s geo|active|elite]\n\t   geo: show geographical data\n\t   active: show active pxies\n\t\
+   elite: show active elite pxies\n\t   elitessl: show active elite ssl pxies";
     echo -e "\t[-r]: reset DB (delete file)";
     exit 2;
 }
@@ -107,6 +108,13 @@ pxie_check() {
     TSTAMP=$(date +%s);
 
     echo -n " # Testing $P_IP:$P_PORT ... "
+    # HTTPS
+    OUT=$(curl -s -k --proxy-insecure --ssl -x "http://$P_IP:$P_PORT" -m $TIMEOUT "$SSLCKURL" | grep -E "^(ELITE|L1|L2) PROXY");
+    if [[ -n "$OUT" ]]; then
+        echo "http(SSL)!";
+        sqlite3 "$PDBFILE" "UPDATE proxy SET type=\"http\", ssl=\"y\", level=\"$OUT\", checked=\"y\", date=\"$TSTAMP\", active=\"y\" WHERE IP=\"$P_IP\" AND port=$P_PORT";
+        return 1
+    fi
     # HTTP
     OUT=$(curl -s -x "http://$P_IP:$P_PORT" -m $TIMEOUT "$CHECKURL" | grep -E "^(ELITE|L1|L2) PROXY");
     if [[ -n "$OUT" ]]; then
@@ -204,6 +212,9 @@ do
             elif [[ "$SHOW" == "elite" ]]; then
                 sqlite3 $PDBFILE --separator ' ' "select type,IP,port from proxy where active='y' and level like 'ELITE%'";
                 exit;
+            elif [[ "$SHOW" == "elitessl" ]]; then
+                sqlite3 $PDBFILE --separator ' ' "select type,IP,port from proxy where active='y' and ssl='y' and level like 'ELITE%'";
+                exit;
             else
                 usage;
             fi
@@ -219,7 +230,7 @@ if [ -f "$PDBFILE" ]; then
     echo "File \"$PDBFILE\" found! Using it...";
 else
     echo " -> Creating new DB..."
-    sqlite3 "$PDBFILE" 'CREATE TABLE proxy (id INTEGER PRIMARY KEY, IP TEXT, port NUMERIC, type TEXT, level TEXT, checked TEXT, date NUMERIC, active TEXT, org TEXT, country_name TEXT, country_code TEXT, UNIQUE(IP, port));';
+    sqlite3 "$PDBFILE" 'CREATE TABLE proxy (id INTEGER PRIMARY KEY, IP TEXT, port NUMERIC, type TEXT, ssl TEXT, level TEXT, checked TEXT, date NUMERIC, active TEXT, org TEXT, country_name TEXT, country_code TEXT, UNIQUE(IP, port));';
 fi
 
 if [[ -n "$SHODAN" ]]; then

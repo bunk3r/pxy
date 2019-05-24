@@ -81,7 +81,7 @@ banner() {
 
 # USAGE
 usage(){
-    printf "Usage: %s: [-d] [-i] [-l] [-f <file>] [-t <number>] [-b <dbfile>] [-c 1-3] [-s geo|active|elite|elitessl] [-r]\n\n" $0;
+    printf "Usage: %s: [-d] [-i] [-l] [-f <file>] [-t <number>] [-b <dbfile>] [-c 1-3] [-s <type>] [-r]\n\n" $0;
     echo -e "\t[-d]: download new data from shodan";
     echo -e "\t[-i]: interactive session";
     echo -e "\t[-l]: load pxies from local shodan JSON files";
@@ -89,8 +89,8 @@ usage(){
     echo -e "\t[-t <number>]: curl timeout (default to \"5\" seconds)";
     echo -e "\t[-b <dbfile>]: sqlite3 file (default to \"pxies.db\")";
     echo -e "\t[-c <number>]:\n\t   1: recheck non active pxies\n\t   2: all\n\t   3: active";
-    echo -e "\t[-s geo|active|elite|elitessl]\n\t   geo: show geographical data\n\t   active: show active pxies\n\t\
-   elite: show active elite pxies\n\t   elitessl: show active elite ssl pxies";
+    echo -e "\t[-s geo|active|lit|litssl|litsocks]\n\t   geo: show geographical data\n\t   active: show active pxies\n\t\
+   lit: show active elite pxies\n\t   litssl: show active elite ssl pxies\n\t   litsocks: show active elite socks pxies";
     echo -e "\t[-r]: reset DB (delete file)";
     exit 2;
 }
@@ -207,13 +207,16 @@ do
                 sqlite3 $PDBFILE "select type,IP,port,level,quote(country_name),quote(country_code) from proxy where active='y'";
                 exit;
             elif [[ "$SHOW" == "active" ]]; then
-                sqlite3 $PDBFILE --separator ' ' "select type,IP,port,level from proxy where active='y'";
+                sqlite3 $PDBFILE --separator ' ' "select type,IP,port,level,ssl from proxy where active='y'";
                 exit;
-            elif [[ "$SHOW" == "elite" ]]; then
-                sqlite3 $PDBFILE --separator ' ' "select type,IP,port from proxy where active='y' and level like 'ELITE%'";
+            elif [[ "$SHOW" == "lit" ]]; then
+                sqlite3 $PDBFILE --separator ' ' "select type,IP,port,ssl from proxy where active='y' and level like 'ELITE%'";
                 exit;
-            elif [[ "$SHOW" == "elitessl" ]]; then
-                sqlite3 $PDBFILE --separator ' ' "select type,IP,port from proxy where active='y' and ssl='y' and level like 'ELITE%'";
+            elif [[ "$SHOW" == "litssl" ]]; then
+                sqlite3 $PDBFILE --separator ' ' "select type,IP,port from proxy where active='y' and ssl='y' or type like 'sock%' and level like 'ELITE%'";
+                exit;
+            elif [[ "$SHOW" == "litsocks" ]]; then
+                sqlite3 $PDBFILE --separator ' ' "select type,IP,port from proxy where active='y' and type like 'sock%' and level like 'ELITE%'";
                 exit;
             else
                 usage;

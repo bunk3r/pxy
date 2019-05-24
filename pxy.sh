@@ -112,7 +112,7 @@ pxie_check() {
     OUT=$(curl -s -k --proxy-insecure --ssl -x "http://$P_IP:$P_PORT" -m $TIMEOUT "$SSLCKURL" | grep -E "^(ELITE|L1|L2) PROXY");
     if [[ -n "$OUT" ]]; then
         echo "http(SSL)!";
-        sqlite3 "$PDBFILE" "UPDATE proxy SET type=\"http\", ssl=\"y\", level=\"$OUT\", checked=\"y\", date=\"$TSTAMP\", active=\"y\" WHERE IP=\"$P_IP\" AND port=$P_PORT";
+        sqlite3 "$PDBFILE" "UPDATE proxy SET type=\"http\", ssl=\"S\", level=\"$OUT\", checked=\"y\", date=\"$TSTAMP\", active=\"y\" WHERE IP=\"$P_IP\" AND port=$P_PORT";
         return 1
     fi
     # HTTP

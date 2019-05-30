@@ -19,6 +19,11 @@ vi pxyconfig
 # run
 ./pxy.sh -h
 ```
+3) first time remeber to configure you shodan API key with
+
+```bash
+shodan init 'YOUKEY'
+```
 
 ## License
 

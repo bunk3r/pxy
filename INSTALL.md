@@ -1,10 +1,10 @@
 ## Installation
 
-How to install Pxy on local machine:
+How to install PXY on local machine:
 
-1) Remember to deploy "proxycheck.php" to you favourite public server (http + https)
+1) Remember to deploy **proxycheck.php** to you favourite public server (http + https accessibility)
 
-2) clone pxy repository and then edit configuration file
+2) clone PXY repository and then edit configuration file
 
 ```bash
 # clone repository
@@ -22,7 +22,7 @@ vi pxyconfig
 3) first time remeber to configure you shodan API key with
 
 ```bash
-shodan init 'YOUKEY'
+shodan init 'YOURKEY'
 ```
 
 ## License

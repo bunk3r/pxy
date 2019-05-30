@@ -1,7 +1,8 @@
 # pxy
 
 ```bash
-~/develop/pxy# ./pxy.sh -h
+# ./pxy.sh -h
+
 #
 #      _____                   _____      _____
 #  ___|\    \ _____      _____|\    \    /    /|
@@ -34,5 +35,5 @@ Usage: ./pxy.sh: [-d] [-i] [-l] [-f <file>] [-t <number>] [-b <dbfile>] [-c 1-3]
 	   litssl: show active elite ssl pxies
 	   litsocks: show active elite socks pxies
 	[-r]: reset DB (delete file)
-~/develop/pxy#
+
 ```

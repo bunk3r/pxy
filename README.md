@@ -1,4 +1,8 @@
-# pxy
+# PXY
+
+PXY - ProXY checker tool
+
+Requires: sh, shodan, sqlite
 
 ```bash
 # ./pxy.sh -h
@@ -37,3 +41,35 @@ Usage: ./pxy.sh: [-d] [-i] [-l] [-f <file>] [-t <number>] [-b <dbfile>] [-c 1-3]
 	[-r]: reset DB (delete file)
 
 ```
+
+## Installation
+
+How to install PXY on local machine:
+
+1) Remember to deploy **proxycheck.php** to you favourite public server (http + https accessibility)
+
+2) clone PXY repository and then edit configuration file
+
+```bash
+# clone repository
+git clone https://github.com/bunk3r/pxy
+
+# copy pxyconfig.dist into pxyconfig
+cp pxyconfig.dist pxyconfig
+
+# edit config
+vi pxyconfig
+
+# run
+./pxy.sh -h
+```
+3) first time remeber to configure you shodan API key with
+
+```bash
+shodan init 'YOURKEY'
+```
+
+## License
+
+PXY is licensed under the MIT License. See [LICENSE](LICENSE) for the full license text.
+

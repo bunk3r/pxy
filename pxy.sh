@@ -81,8 +81,8 @@ banner() {
 
 # USAGE
 usage(){
-    printf "Usage: %s: [-d] [-i] [-l] [-f <file>] [-t <number>] [-b <dbfile>] [-c 1-3] [-s <type>] [-r]\n\n" $0;
-    echo -e "\t[-d]: download new data from shodan";
+    printf "Usage: %s: [-d <rlimit>] [-i] [-l] [-f <file>] [-t <number>] [-b <dbfile>] [-c 1-3] [-s <type>] [-r]\n\n" $0;
+    echo -e "\t[-d <rlimit>]: download <rlimit> new records from shodan ('u' = unlimited, default 1000)";
     echo -e "\t[-i]: interactive session";
     echo -e "\t[-l]: load pxies from local shodan JSON files";
     echo -e "\t[-f <file>  ]: load pxies from file (\"IP|port\" per line)";
@@ -156,13 +156,23 @@ pxie_insert() {
 banner;
 
 # GETOPTS
-while getopts dilf:t:b:c:rs:h par
+while getopts d:ilf:t:b:c:rs:h par
 do
     case $par in
         d)	echo " -> Downloading data from shodan and updating DB..."
-            for p in privoxy squid socks; do
+            LIMIT="1000"; 
+            L="${OPTARG//[^0-9u]/}"
+            if [[ -z "$L" ]]; then
+                echo " -> Please only numbers or 'u' (unlimited)! Default to 1000..."
+            elif [[ "$L" == "u" ]]; then
+                LIMIT="-1"
+            else 
+                LIMIT="$L"
+            fi
+            echo " -> Downloaded results set to: $LIMIT"
+            for p in privoxy squid socks mikrotik; do
                 FN=$p"_`date +%Y-%m-%d_%H-%M-%S`";
-                shodan download --limit -1 $FN "product:$p" && shodan parse --separator : --fields ip_str,port $FN.json.gz
+                shodan download --limit $LIMIT $FN "product:$p" && shodan parse --separator : --fields ip_str,port $FN.json.gz
             done
             SHODAN="true"
             ;;
